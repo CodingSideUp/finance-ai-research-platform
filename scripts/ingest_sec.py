@@ -9,7 +9,16 @@ from src.ingestion.filing_service import extract_filings
 from src.ingestion.manifest import create_manifest
 from src.storage.gcs_storage import GCSStorage
 
+#This is the orchestrator
+#               ingest_sec.py
 
+#        ┌────────────┼────────────┐
+#        ▼            ▼            ▼
+#  SECClient    filing_service   manifest
+
+#                       │
+#                       ▼
+#                   GCSStorage
 # =========================================================
 # COMMAND-LINE ARGUMENTS
 # =========================================================
@@ -639,3 +648,39 @@ if (
         "The requested target was not reached. "
         "Increase --max-companies or inspect failures."
     )
+
+
+# Why did we make it configurable?
+
+# You ran:
+
+# python -m scripts.ingest_sec \
+#     --target-documents 1000 \
+#     --filings-per-company 5 \
+#     --max-companies 300
+
+# Notice:
+
+# 1000
+# 5
+# 300
+
+# are parameters.
+
+# The code itself didn't need rewriting.
+
+# That's a major production principle.
+
+# Bad:
+
+# TARGET = 100
+
+# Then manually edit source code every time.
+
+# Better:
+
+# --target-documents 1000
+
+# Meaning:
+
+# Configuration changes. Application logic does not.
